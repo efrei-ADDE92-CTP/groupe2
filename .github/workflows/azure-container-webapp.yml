@@ -47,6 +47,7 @@ jobs:
             containerAppName: container-app-groupe2 
             resourceGroup: ${{ secrets.RESOURCE_GROUP }}
             imageToDeploy: ${{ secrets.REGISTRY_LOGIN_SERVER }}/groupe2:v1
+            containerAppEnvironment: grp2-env
         
         # updating ACA
         - name: Update ACA

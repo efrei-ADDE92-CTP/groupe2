@@ -63,7 +63,7 @@ jobs:
                 --scale-rule-type http \
                 --scale-rule-http-concurrency 10
               az containerapp ingress enable \
-                -n groupe2 \
+                -n container-app-groupe2  \
                 -g ${{ secrets.RESOURCE_GROUP }} \
                 --type external \
                 --allow-insecure \

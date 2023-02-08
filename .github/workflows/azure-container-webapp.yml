@@ -1,0 +1,70 @@
+on:
+  push:
+    branches:
+      - main
+      
+name: Groupe4-workflow
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+        steps:
+        # checkout the repo
+        - name: 'Checkout GitHub Action'
+          uses: actions/checkout@main
+        
+        # login to Azure
+        - name: 'Login via Azure CLI'
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+        # login to ACR
+        - name: 'Login to ACR'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+            username: ${{ secrets.REGISTRY_USERNAME }}
+            password: ${{ secrets.REGISTRY_PASSWORD }}
+        
+        # lint dockerfile
+        - name: 'Hadolint test'
+          id: hadolint_test
+          run: |
+            OUTPUT=$(docker run --rm -i hadolint/hadolint < dockerfile | wc -l)
+            echo "::set-output name=OUTPUT::$OUTPUT"
+        
+        # build and push image to ACR
+        - name: 'Build and push image'
+          if: steps.hadolint_test.outputs.OUTPUT==0
+          run: |
+            docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/classifier_g${{ secrets.GROUPE }}:v1
+            docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/classifier_g${{ secrets.GROUPE }}:v1
+        # deploy to ACA
+        - name: Build and deploy Container App
+          uses: azure/container-apps-deploy-action@v0
+          with:
+            containerAppName: classifier-g${{ secrets.GROUPE }}
+            resourceGroup: ${{ secrets.RESOURCE_GROUP }}
+            imageToDeploy: ${{ secrets.REGISTRY_LOGIN_SERVER }}/classifier_g${{ secrets.GROUPE }}:v1
+        
+        # updating ACA
+        - name: Update ACA
+          uses: azure/CLI@v1
+          with:
+            inlineScript: |
+              az containerapp update \
+                -n classifier-g${{ secrets.GROUPE }} \
+                -g ${{ secrets.RESOURCE_GROUP }} \
+                --min-replicas 0 \
+                --max-replicas 10 \
+                --scale-rule-name my-http-rule \
+                --scale-rule-type http \
+                --scale-rule-http-concurrency 10
+              az containerapp ingress enable \
+                -n classifier-g${{ secrets.GROUPE }} \
+                -g ${{ secrets.RESOURCE_GROUP }} \
+                --type external \
+                --allow-insecure \
+                --target-port 80 \
+                --transport auto

@@ -55,7 +55,7 @@ jobs:
           with:
             inlineScript: |
               az containerapp update \
-                -n groupe2 \
+                -n container-app-groupe2 \
                 -g ${{ secrets.RESOURCE_GROUP }} \
                 --min-replicas 0 \
                 --max-replicas 10 \

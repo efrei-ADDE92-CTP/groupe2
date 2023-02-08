@@ -69,3 +69,12 @@ jobs:
                 --allow-insecure \
                 --target-port 80 \
                 --transport auto
+        # deploy to azure container instance
+        - name: 'Deploy to Azure Container Instances'
+          uses: 'azure/aci-deploy@v1'
+          with:
+            resource-group: ${{ secrets.RESOURCE_GROUP }}
+            dns-name-label: https://container-app-groupe2.mangowater-5bdaff50.westeurope.azurecontainerapps.io
+            image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/groupe2:v1
+            name: container-app-groupe2
+

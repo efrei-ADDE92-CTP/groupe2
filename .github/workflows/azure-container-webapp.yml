@@ -3,7 +3,7 @@ on:
     branches:
       - main
       
-name: Groupe4-workflow
+name: Groupe2-workflow
 
 jobs:
     build-and-deploy:

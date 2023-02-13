@@ -4,6 +4,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import cross_val_score
 from flask import Flask, request, jsonify
 import joblib
+from prometheus_client import Counter, start_http_server
 
 # Load the Iris dataset
 iris = datasets.load_iris()
@@ -36,8 +37,13 @@ else:
     print('Model is not overfitting')
 
 joblib.dump(knn, 'knn_model.pkl')
+
+
 app = Flask(__name__)
+
+
 if __name__ == "__main__":
+    start_http_server(8000) # Start the Prometheus HTTP server on port 8000
     app.run(host="0.0.0.0")
 
 # Load the model from the file
@@ -46,8 +52,14 @@ if __name__ == "__main__":
 # Load the Iris dataset
     iris = datasets.load_iris()
 
+# Create a Prometheus counter to count API calls
+api_calls_counter = Counter("api_calls", "Number of API calls")
+
 @app.route('/predict', methods=['POST'])
 def predict():
+    # Increment the API calls counter
+    api_calls_counter.inc()
+
     # Get the data from the POST request
     data = request.get_json(force=True)
 
@@ -59,3 +71,4 @@ def predict():
 
     # Return the prediction as a response
     return jsonify(species)
+

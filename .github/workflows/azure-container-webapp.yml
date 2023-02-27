@@ -57,7 +57,7 @@ jobs:
               az containerapp update \
                 -n container-app-groupe2 \
                 -g ${{ secrets.RESOURCE_GROUP }} \
-                --min-replicas 0 \
+                --min-replicas 1 \
                 --max-replicas 10 \
                 --scale-rule-name my-http-rule \
                 --scale-rule-type http \

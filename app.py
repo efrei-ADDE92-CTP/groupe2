@@ -1,11 +1,13 @@
 import joblib
-from flask import Flask, request, jsonify
+from flask import Flask, Response, request, jsonify
+
 
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import cross_val_score
 
+import prometheus_client
 from prometheus_client import Counter, start_http_server
 
 # Load the Iris dataset
@@ -73,7 +75,7 @@ def predict():
 @app.route('/metrics', methods=['GET'])
 def metrics():
     res = []
-    res.append(prometheus_client.generate_latest(c))
+    res.append(prometheus_client.generate_latest(api_calls_counter))
     return Response(res, mimetype="text/plain")
 
 if __name__ == "__main__":

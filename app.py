@@ -63,6 +63,7 @@ def predict():
     data = request.get_json(force=True)
 
     # Make prediction using the model
+    model = joblib.load('knn_model.pkl')
     prediction = model.predict(data)
 
     # Get the names of the iris species

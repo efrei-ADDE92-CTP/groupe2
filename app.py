@@ -62,6 +62,7 @@ def predict():
     # Get the data from the POST request
     data = request.get_json(force=True)
 
+    global model
     # Make prediction using the model
     model = joblib.load('knn_model.pkl')
     prediction = model.predict(data)

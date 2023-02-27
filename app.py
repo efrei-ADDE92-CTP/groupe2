@@ -88,5 +88,5 @@ if __name__ == "__main__":
     # Start the Prometheus HTTP server on port 8000
     #start_http_server(8000) 
 
-    # Run our ap on localhost
+    # Run our app on localhost
     app.run(host="0.0.0.0", port= 80)

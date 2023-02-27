@@ -7,5 +7,6 @@ COPY . /app
 
 WORKDIR /app
 
+EXPOSE 80
 
-CMD ["python3", "app.py"]
+CMD flask run -h 0.0.0.0 -p 80

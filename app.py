@@ -48,7 +48,6 @@ else:
 # Make a dump of our model
 joblib.dump(knn, 'knn_model.pkl')
 
-
 app = Flask(__name__)
 
 # Create a Prometheus counter to count API calls

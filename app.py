@@ -86,8 +86,7 @@ if __name__ == "__main__":
     iris = datasets.load_iris()
 
     # Start the Prometheus HTTP server on port 8000
-    start_http_server(8000) 
+    #start_http_server(8000) 
 
     # Run our ap on localhost
     app.run(host="0.0.0.0", port= 80)
-

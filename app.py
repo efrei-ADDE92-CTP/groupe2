@@ -52,7 +52,6 @@ app = Flask(__name__)
 # Create a Prometheus counter to count API calls
 api_calls_counter = Counter("api_calls", "Number of API calls")
 
-
 @app.route('/predict', methods=['POST'])
 def predict():
     # Increment the API calls counter
@@ -68,7 +67,7 @@ def predict():
     species = [iris.target_names[i] for i in prediction]
 
     # Return the prediction as a response
-    return jsonify(species)
+    return "La prediction est : {}".format(species[0])
 
 
 @app.route('/metrics', methods=['GET'])
